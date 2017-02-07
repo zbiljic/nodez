@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.basepom</groupId>
+    <artifactId>basepom-minimal</artifactId>
+    <version>21</version>
+  </parent>
+
+  <groupId>com.zbiljic</groupId>
+  <artifactId>nodez</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+
+  <name>nodez</name>
+  <description>Dependency graph library for async programming</description>
+
+  <inceptionYear>2017</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>zbiljic</id>
+      <name>Nemanja Zbiljić</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:zbiljic/nodez.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/zbiljic/nodez.git</developerConnection>
+    <url>https://github.com/zbiljic/nodez</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>http://github.com/zbiljic/nodez/issues</url>
+  </issueManagement>
+
+  <properties>
+    <!-- Project options -->
+    <basepom.release.tag-name-format>v@{project.version}</basepom.release.tag-name-format>
+    <!-- Dependencies -->
+    <dep.findbugs.version>3.0.1</dep.findbugs.version>
+    <dep.slf4j.version>1.7.22</dep.slf4j.version>
+    <dep.testng.version>6.10</dep.testng.version>
+    <dep.logback.version>1.1.9</dep.logback.version>
+  </properties>
+
+  <dependencies>
+
+    <!-- findbugs -->
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <version>${dep.findbugs.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${dep.slf4j.version}</version>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${dep.testng.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${dep.logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>
