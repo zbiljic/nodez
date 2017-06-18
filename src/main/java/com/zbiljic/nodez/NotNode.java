@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * The {@code NotNode} represents a logic negation of a predicate node.
- *
+ * <p>
  * This is typically used for async predicates.
  *
  * @see Node

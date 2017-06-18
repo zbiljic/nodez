@@ -3,10 +3,10 @@ package com.zbiljic.nodez;
 import com.zbiljic.nodez.debug.DebugManager;
 import com.zbiljic.nodez.utils.CompletableFutures;
 import com.zbiljic.nodez.utils.Throwables;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -28,8 +28,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
 
 /**
  * A {@code Node} represents the {@link CompletableFuture} computation of a value as the result of
@@ -361,7 +359,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   /**
    * Return a set of enum fields that define which named dependencies are optional.
-   *
+   * <p>
    * This is only used to generate DOT graph.
    */
   public final Set<? extends Enum> getOptionalDependencies() {
@@ -450,7 +448,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
   /**
    * Creates the future used to determine when the node's dependencies are able to be {@link
    * #evaluate()}'ed.
-   *
+   * <p>
    * The default implementation is to join all dependencies so that {@link #evaluate()} is only
    * called when all dependencies are complete and successful.
    */
@@ -571,9 +569,9 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   /**
    * Gets the {@code Node} value.
-   *
+   * <p>
    * The node will only emit a non-null value if it completed successfully.
-   *
+   * <p>
    * Since a node's required dependencies must succeed for {@link #evaluate()} to be called, a
    * node's implementation should only be able to call {@code #emit()} when it's guaranteed to
    * return successfully.
@@ -684,7 +682,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   /**
    * Adds all the elements of the given arrays into a new array.
-   *
+   * <p>
    * The new array contains all of the element of {@code array1} followed by all of the elements
    * {@code array2}. When an array is returned, it is always a new array.
    *
@@ -776,7 +774,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   /**
    * Provides a way of creating a builder from an existing instance of a {@link Node}.
-   *
+   * <p>
    * This method is useful for nodes that require arguments in the constructor or for using mocks.
    */
   public static <T> Builder<T> builder(Node<T> nodeInstance) {
@@ -785,11 +783,11 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   /**
    * A general builder to build a {@link Node} using named dependencies.
-   *
+   * <p>
    * If the {@code node} is created from a class, it will first call the default constructor of the
    * given class (so make sure it has one, since {@link Node} already has one, not implementing any
    * constructor gives you one by default).
-   *
+   * <p>
    * The builder assigns dependencies to the {@code node} instance using enum names. For any
    * dependencies marked as {@link OptionalDep} in the enum class, if they don't already exist in
    * the collected dependency map, they will be added as {@link Node#empty()}.
@@ -867,7 +865,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
     /**
      * Add a named dependency.
-     *
+     * <p>
      * If the dependency is marked as optional, the node will be wrapped so when it fails to emit a
      * valid result, current node's execution won't be affected.
      */
@@ -949,7 +947,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
    * Maps the value of current node to a new type T by applying the provided function, but only when
    * the value is present. For {@code null} values, the function is not even run and the transformed
    * value is {@code null}. Exceptions will be convert to {@code null}.
-   *
+   * <p>
    * This means the function doesn't have to handle nullable inputs when run on nullable nodes.
    */
   public <T> Node<T> mapOnSuccess(NamedFunction<R, T> function) {
@@ -1093,7 +1091,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   /**
    * Wrap a node which has an optional generic type and return an {@link Optional} wrapped value.
-   *
+   * <p>
    * This node will always succeed, and will return {@link Optional#empty()} if the underlying node
    * fails.
    */
@@ -1127,7 +1125,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   /**
    * Create a node from a value supplier. The supplier will be called at most once.
-   *
+   * <p>
    * This is only called when the value node is actually used (have its {@link #emit()} or {@link
    * #apply()} called, not during its creation)
    */
@@ -1137,7 +1135,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   /**
    * Gets a Node with a null value.
-   *
+   * <p>
    * Any node that depends on this noValue node will not succeed.
    */
   public static <K> Node<K> noValue() {

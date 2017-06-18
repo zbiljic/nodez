@@ -1,12 +1,11 @@
 package com.zbiljic.nodez;
 
-import java.util.function.Predicate;
-
 import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
 /**
  * T named {@link Predicate}
- *
+ * <p>
  * Use this to create static constant predicates to be used in node predicate switches.
  *
  * @param <T> the type of the input to the predicate

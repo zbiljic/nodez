@@ -1,13 +1,11 @@
 package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.utils.CompletableFutures;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CompletableFuture;
-
 import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Base class for nodes that transforms a node value, producing a new one.

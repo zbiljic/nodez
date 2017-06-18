@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 /**
  * T {@link Function} with a name.
- *
+ * <p>
  * Use this to create static constant functions to be used in node transformations, etc.
  *
  * @param <T> the type of the input to the function

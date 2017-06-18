@@ -2,7 +2,6 @@ package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.debug.DebugLevel;
 import com.zbiljic.nodez.debug.DebugManager;
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -19,6 +18,7 @@ public class SubgraphTest extends NodeTestBase {
 
   // Normal subgraph
   static class SimpleGraph extends Subgraph {
+
     public final Node<Long> longNode;
 
     SimpleGraph() {
@@ -29,6 +29,7 @@ public class SubgraphTest extends NodeTestBase {
 
   // Subgraph without public field, this will throw exception
   static class BadGraph extends Subgraph {
+
     private Node<Long> privateLongNode;  // this will fail
 
     BadGraph() {

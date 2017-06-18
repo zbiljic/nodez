@@ -1,14 +1,12 @@
 package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.utils.CompletableFutures;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
 
 /**
  * Applies a predicate on a given source node, producing a boolean output.

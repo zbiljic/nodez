@@ -43,7 +43,7 @@ public enum Throwables {
 
   /**
    * Throws {@code throwable} if it is a {@link RuntimeException} or {@link Error}. Example usage:
-   *
+   * <p>
    * <pre>
    * for (Foo foo : foos) {
    *   try {

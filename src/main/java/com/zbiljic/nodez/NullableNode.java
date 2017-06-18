@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * A {@code Node} that allows null value output.
- *
+ * <p>
  * NOTE: right now this has a few constructors, add more here to match the parent {@code Node} class
  * if needed.
  *

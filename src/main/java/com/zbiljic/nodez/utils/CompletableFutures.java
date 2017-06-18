@@ -101,10 +101,10 @@ public final class CompletableFutures {
   /**
    * Returns a new {@link CompletableFuture} which completes to a list of all values of its input
    * stages, if all succeed.  The list of results is in the same order as the input stages.
-   *
+   * <p>
    * If any of the given stages complete exceptionally, then the returned future also does so, with
    * a {@link CompletionException} holding this exception as its cause.
-   *
+   * <p>
    * If no stages are provided, returns a future holding an empty list.
    *
    * @param stages a {@link List} of {@link CompletionStage}s to combine

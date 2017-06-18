@@ -8,10 +8,10 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Predicate switch nodes make a choice based on a predicate and subsequently represents the output
  * of the chosen node.
- *
+ * <p>
  * If the predicate is true, then the node set with {@code ifTrue} is used, otherwise the node set
  * with {@code ifFalse} is used.
- *
+ * <p>
  * The chosen node is lazily executed, so work is not wasted on the unused node.
  *
  * @param <R> return type of the node

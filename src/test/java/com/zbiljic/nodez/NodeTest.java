@@ -23,6 +23,7 @@ public class NodeTest extends NodeTestBase {
    * A simple node that sums the value of three other nodes in a specific way
    */
   static class SumNode extends Node<Integer> {
+
     public enum D {
       FIRST,
       SECOND,
@@ -174,6 +175,7 @@ public class NodeTest extends NodeTestBase {
   }
 
   static class PlusOneNode extends Node<Integer> {
+
     Node<Optional<Integer>> anotherNode;
 
     PlusOneNode(Node<Optional<Integer>> anotherNode) {

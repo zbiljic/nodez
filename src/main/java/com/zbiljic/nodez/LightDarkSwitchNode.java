@@ -1,11 +1,10 @@
 package com.zbiljic.nodez;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
-import javax.annotation.Nullable;
 
 /**
  * A node that runs one or two nodes, and selectively returns the result based on the condition.
@@ -19,7 +18,7 @@ public class LightDarkSwitchNode<T> extends Node<T> {
 
   /**
    * Use a condition to dark read a response node, which is always applied.
-   *
+   * <p>
    * If the condition is {@code true}, {@code null} will be returned, if {@code false}, the result
    * of {@param responseNode} will be returned.
    */
@@ -29,7 +28,7 @@ public class LightDarkSwitchNode<T> extends Node<T> {
 
   /**
    * Use a condition to choose between two nodes (always both applied).
-   *
+   * <p>
    * If the condition is {@code true}, return the result of first node, otherwise the second.
    */
   public static <T> Node<T> create(Node<Boolean> shouldDarkReadNode, Node<T> darkNode, Node<T> lightNode) {

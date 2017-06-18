@@ -2,6 +2,7 @@ package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.utils.Pair;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,8 +15,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
 
 /**
  * Create DOT graph text for a node. This recursively traverses the node dependencies and create
@@ -57,6 +56,7 @@ public final class NodeDotGraphGenerator {
    * Edge Info for rendering
    */
   private static class EdgeInfo {
+
     boolean optional;
     String label;  // by default this is just the dep name, but may have special name
 
@@ -70,6 +70,7 @@ public final class NodeDotGraphGenerator {
    * Node Info for rendering
    */
   private static class NodeInfo {
+
     Node node;  // the reference to the node
     String keyName;  // key used in the DOT graph file
     String nodeName;  // name from node itself
@@ -206,7 +207,7 @@ public final class NodeDotGraphGenerator {
   /**
    * A class to store the context information while we recursively traverse the node dependency
    * tree, currently it has only {@code keyId} info.
-   *
+   * <p>
    * TODO: add subgraph cluster support.
    */
   static class GraphContext {

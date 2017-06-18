@@ -5,7 +5,7 @@ import java.util.function.Function;
 /**
  * A generic pair implementation that can be used to cumulatively aggregate a data structure during
  * a promise pipeline.
- *
+ * <p>
  * This can sometimes be useful when collecting facts about something as part of a data stream
  * without using mutable data structures.
  *
@@ -164,7 +164,7 @@ public final class Pair<L, R> {
   /**
    * Creates a new pair, with the left item being the result of applying the given function to the
    * left item of {@code this}.
-   *
+   * <p>
    * The right value is unchanged.
    *
    * @param function a transformer for the left value
@@ -181,7 +181,7 @@ public final class Pair<L, R> {
   /**
    * Creates a new pair, with the right item being the result of applying the given function to the
    * right item of {@code this}.
-   *
+   * <p>
    * The left value is unchanged.
    *
    * @param function a transformer for the right value

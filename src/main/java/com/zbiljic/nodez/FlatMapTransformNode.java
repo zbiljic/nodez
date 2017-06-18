@@ -1,13 +1,12 @@
 package com.zbiljic.nodez;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
 /**
  * Transforms a node using a function that returns a future of a new value.
- *
+ * <p>
  * See {@link Node#flatMap}.
  *
  * @param <SourceType> Source node type.
@@ -19,7 +18,7 @@ public class FlatMapTransformNode<SourceType, R> extends BaseTransformNode<Sourc
 
   /**
    * Create a new FlatMapTransformNode with decider key.
-   *
+   * <p>
    * NOTE: Try not to use this directly, use Node.flatMap() instead.
    */
   static <SourceType, R> FlatMapTransformNode<SourceType, R> create(

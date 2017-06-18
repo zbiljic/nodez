@@ -1,7 +1,6 @@
 package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.utils.Throwables;
-
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

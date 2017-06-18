@@ -2,16 +2,15 @@ package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.utils.CompletableFutures;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
 /**
  * {@code TransformNode} applies a function on a node value, producing a new value.
- *
+ * <p>
  * A typical transform is extracting a simple value from a more complex data structure.
- *
+ * <p>
  * This node can return null since the transform function can return null.
  *
  * @param <SourceType> Source node type.
@@ -23,7 +22,7 @@ public class TransformNode<SourceType, R> extends BaseTransformNode<SourceType, 
 
   /**
    * Create a new {@code TransformNode} with no name.
-   *
+   * <p>
    * NOTE: try not to use this directly, use Node.map() instead.
    */
   public static <SourceType, R> TransformNode<SourceType, R> create(
@@ -34,7 +33,7 @@ public class TransformNode<SourceType, R> extends BaseTransformNode<SourceType, 
 
   /**
    * Create a new {@code TransformNode} with name.
-   *
+   * <p>
    * NOTE: try not to use this directly, use Node.map() instead.
    */
   public static <SourceType, R> TransformNode<SourceType, R> create(

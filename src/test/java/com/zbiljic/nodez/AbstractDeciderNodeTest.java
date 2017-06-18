@@ -8,6 +8,7 @@ import static org.testng.Assert.assertTrue;
 public class AbstractDeciderNodeTest extends NodeTestBase {
 
   private class TestDeciderNode extends AbstractDeciderNode {
+
     private Boolean value;
 
     public TestDeciderNode(Boolean value) {

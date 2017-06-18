@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * AndNode represents a conjunction of a list of boolean nodes.
- *
+ * <p>
  * The parallelism model chosen (eager or lazy) determines how the dependencies execute.
  *
  * @see Node
@@ -55,20 +55,20 @@ public final class AndNode extends BooleanOperationNode {
 
   /**
    * Evaluate the operands left to right executing according to the parallelism mode specified.
-   *
+   * <p>
    * Call {@link #apply()} on each operand in sequence and evaluate the boolean condition.
-   *
+   * <p>
    * If the evaluation should be continued, then {@link #apply()} is called on the next operand by
    * recursively calling evaluate on the rest of the operands. If the evaluation hasn't prematurely
    * terminated, then we arrive at the last operand, the response is the final state of the
    * evaluation.
-   *
+   * <p>
    * NOTE: Calling {@link #apply()} on a {@link Node} is idempotent and will always give you back
    * the same {@link CompletableFuture}.
-   *
+   * <p>
    * For lazy evaluation, each apply may kick off the task sequentially, causing serial execution of
    * the operands.
-   *
+   * <p>
    * For eager evaluation, all of the nodes have been kicked-off already, so we are effectively
    * evaluating them left-to-right as they complete.
    */

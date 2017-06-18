@@ -2,7 +2,6 @@ package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.debug.DebugManager;
 import com.zbiljic.nodez.utils.CompletableFutures;
-
 import org.testng.annotations.BeforeMethod;
 
 import java.time.Duration;
