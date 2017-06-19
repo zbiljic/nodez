@@ -40,6 +40,12 @@ public class PredicateSwitchNode<R> extends Node<R> {
   }
 
   @Override
+  protected void logEnd() {
+    super.logEnd();
+    debugDetailed("predicate value from [%s] = %s", predicateNode.getName(), predicateNode.emit());
+  }
+
+  @Override
   public String getResponseClassName() {
     return this.trueNode.getResponseClassName();
   }
