@@ -72,6 +72,8 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
     DEP15
   }
 
+  protected static final Node[] EMPTY_NODE_ARRAY = new Node[0];
+
   public static final Node<Boolean> TRUE = Node.value("true", true);
   public static final Node<Boolean> FALSE = Node.value("false", false);
   public static final Node NULL_NODE = Node.value("null", null);
@@ -117,63 +119,55 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
   //
 
   protected Node() {
-    this(null, false, false, Collections.emptyMap(), new Node[0]);
+    this(null, false, false, Collections.emptyMap(), EMPTY_NODE_ARRAY);
   }
 
   protected Node(boolean optional, boolean canEmitNull) {
-    this(null, optional, canEmitNull, Collections.emptyMap(), new Node[0]);
+    this(null, optional, canEmitNull, Collections.emptyMap(), EMPTY_NODE_ARRAY);
   }
 
   protected Node(String name, boolean optional, boolean canEmitNull) {
-    this(name, optional, canEmitNull, Collections.emptyMap(), new Node[0]);
+    this(name, optional, canEmitNull, Collections.emptyMap(), EMPTY_NODE_ARRAY);
   }
 
   protected Node(Node... nodes) {
-    this(null, false, false, Collections.emptyMap(), nodes);
+    this(null, false, false, Arrays.asList(nodes), EMPTY_NODE_ARRAY);
   }
 
   protected Node(boolean optional, boolean canEmitNull, Node... nodes) {
-    this(null, optional, canEmitNull, Collections.emptyMap(), nodes);
+    this(null, optional, canEmitNull, Arrays.asList(nodes), EMPTY_NODE_ARRAY);
   }
 
   protected Node(String name, Node... nodes) {
-    this(name, false, false, Collections.emptyMap(), nodes);
+    this(name, false, false, Arrays.asList(nodes), EMPTY_NODE_ARRAY);
   }
 
   protected Node(String name, boolean optional, boolean canEmitNull, Node... nodes) {
-    this(name, optional, canEmitNull, Collections.emptyMap(), nodes);
+    this(name, optional, canEmitNull, Arrays.asList(nodes), EMPTY_NODE_ARRAY);
   }
 
   protected Node(Collection<Node> dependentNodes) {
-    this(null, false, false, Collections.emptyMap(), dependentNodes);
+    this(null, false, false, dependentNodes, EMPTY_NODE_ARRAY);
   }
 
   protected Node(boolean optional, boolean canEmitNull, Collection<Node> dependentNodes) {
-    this(null, optional, canEmitNull, Collections.emptyMap(), dependentNodes);
+    this(null, optional, canEmitNull, dependentNodes, EMPTY_NODE_ARRAY);
   }
 
   protected Node(String name, Collection<Node> dependentNodes) {
-    this(name, false, false, Collections.emptyMap(), dependentNodes);
+    this(name, false, false, dependentNodes, EMPTY_NODE_ARRAY);
   }
 
   protected Node(String name, boolean optional, boolean canEmitNull, Collection<Node> dependentNodes) {
-    this(name, optional, canEmitNull, Collections.emptyMap(), dependentNodes);
-  }
-
-  protected Node(String name,
-                 boolean optional,
-                 boolean canEmitNull,
-                 Map<Enum, Node> dependentNodesByName,
-                 Collection<Node> sinkNodes) {
-    this(name, optional, canEmitNull, dependentNodesByName, sinkNodes.toArray(new Node[sinkNodes.size()]));
+    this(name, optional, canEmitNull, dependentNodes, EMPTY_NODE_ARRAY);
   }
 
   protected Node(String name,
                  boolean optional,
                  boolean canEmitNull,
                  Collection<Node> dependentNodes,
-                 Collection<Node> sinkNodes) {
-    this(name, optional, canEmitNull, createNamedDependencies(dependentNodes), sinkNodes.toArray(new Node[sinkNodes.size()]));
+                 Node[] sinkNodes) {
+    this(name, optional, canEmitNull, createNamedDependencies(dependentNodes), sinkNodes);
   }
 
   /**
@@ -203,7 +197,9 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
     this.dependentNodesByName = dependentNodesByName.isEmpty()
       ? Collections.emptyMap()
       : addOptionalDeps(dependentNodesByName);
-    this.sinkNodes = sinkNodes.clone();
+    this.sinkNodes = (sinkNodes.length == 0)
+      ? EMPTY_NODE_ARRAY
+      : sinkNodes.clone();
   }
 
   //
@@ -795,8 +791,6 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
    * @param <T> The return type of the nodes this Builder builds.
    */
   public static class Builder<T> {
-
-    private static final Node[] EMPTY_NODE_ARRAY = new Node[0];
 
     protected final Node<T> nodeInstance;
     protected String nodeKey;
