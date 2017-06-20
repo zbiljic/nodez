@@ -537,7 +537,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
           // completed successfully
           if (value == null && !canEmitNull) {
             promise.completeExceptionally(
-              new RuntimeException("evaluate() returned CompletableFuture.value(null) but the step is not marked as Nullable."));
+              new RuntimeException("evaluate() returned CompletableFuture.value(null) but the node is not marked as Nullable."));
           } else {
             promise.complete(value);
           }
