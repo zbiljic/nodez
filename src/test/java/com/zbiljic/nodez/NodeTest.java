@@ -194,80 +194,6 @@ public class NodeTest extends NodeTestBase {
     }
   }
 
-//  public static final DeciderSupplier ALWAYS_TRUE = new DeciderSupplier("always_true") {
-//    @Override
-//    public Boolean get() {
-//      return true;
-//    }
-//  };
-//  public static final DeciderSupplier ALWAYS_FALSE = new DeciderSupplier("always_true") {
-//    @Override
-//    public Boolean get() {
-//      return false;
-//    }
-//  };
-//
-//  @Test
-//  public void testDecider() throws Exception {
-//    {
-//      // Required node, with decider
-//      Node<Boolean> requiredNode = Node.value(true);
-//      requiredNode.setDeciderSupplier(DeciderSupplier.ALWAYS_FALSE);
-//      assertNull(resultFromNode(requiredNode));
-//    }
-//
-//    {
-//      // Optional node, absent decider supplier
-//      Node<Optional<Boolean>> optionalNode = Node.optional(Node.value(true));
-//      optionalNode.setDeciderSupplier(Optional.<DeciderSupplier>absent());
-//      assertEquals(Optional.of(true), resultFromNode(optionalNode));
-//    }
-//
-//    {
-//      // Optional node with false decider
-//      Node<Optional<Boolean>> optionalNode = Node.optional(Node.value(true));
-//      optionalNode.setDeciderSupplier(DeciderSupplier.ALWAYS_FALSE);
-//      assertEquals(Optional.<Boolean>absent(), resultFromNode(optionalNode));
-//    }
-//
-//    {
-//      // Optional node with true decider
-//      Node<Optional<Boolean>> optionalNode = Node.optional(Node.value(true));
-//      optionalNode.setDeciderSupplier(DeciderSupplier.ALWAYS_TRUE);
-//      assertEquals(Optional.of(true), resultFromNode(optionalNode));
-//    }
-//
-//    {
-//      // Map with true decider
-//      Node<String> resultNode = Node.value("x")
-//        .mapWithDeciderSupplier("map", DeciderSupplier.ALWAYS_TRUE, x -> "[" + x + "]");
-//      assertEquals("[x]", resultFromNode(resultNode));
-//    }
-//
-//    {
-//      // Map with false decider
-//      Node<String> resultNode = Node.value("x")
-//        .mapWithDeciderSupplier("map", DeciderSupplier.ALWAYS_FALSE, x -> "[" + x + "]");
-//      assertNull(resultFromNode(resultNode));
-//    }
-//
-//    {
-//      // flatMap with true decider
-//      Node<String> resultNode = Node.value("x")
-//        .flatMapWithDeciderSupplier(DeciderSupplier.ALWAYS_TRUE,
-//          NamedFunction.create("map", x -> CompletableFuture.value("[" + x + "]")));
-//      assertEquals("[x]", resultFromNode(resultNode));
-//    }
-//
-//    {
-//      // flatMap with false decider
-//      Node<String> resultNode = Node.value("x")
-//        .flatMapWithDeciderSupplier(DeciderSupplier.ALWAYS_FALSE,
-//          NamedFunction.create("map", x -> CompletableFuture.value("[" + x + "]")));
-//      assertNull(resultFromNode(resultNode));
-//    }
-//  }
-
   @Test
   public void testMap() throws Exception {
     final AtomicInteger functionRuns = new AtomicInteger(0);
@@ -283,49 +209,6 @@ public class NodeTest extends NodeTestBase {
     assertEquals(resultFromNode(mappedNode), "number 100");
     assertEquals(functionRuns.get(), 1);
 
-//    // Function should run for null values since ValueNode is a nullable node
-//    mappedNode = Node.<Integer>noValue().map(func);
-//    try {
-//      resultFromNode(mappedNode);
-//      fail();
-//    } catch (Exception e) {
-//      assertTrue(e instanceof RuntimeException);
-//      assertTrue(Await.result(mappedNode.apply().liftToTry()).isThrow());
-//      assertEquals(functionRuns.get(), 2);
-//    }
-//
-//    // Function should NOT run for null values when mapOnSuccess is used
-//    mappedNode = Node.<Integer>noValue().mapOnSuccess(func);
-//    assertNull(resultFromNode(mappedNode));
-//    assertEquals(functionRuns.get(), 2);
-//
-//    // Function should not run for non-nullable nodes that return null
-//    mappedNode = new Node<Integer>() {
-//      @Override
-//      protected CompletableFuture<Integer> evaluate() throws Exception {
-//        return CompletableFuture.completedFuture(null);
-//      }
-//    }.map(func);
-//    try {
-//      resultFromNode(mappedNode);
-//      fail();
-//    } catch (Exception e) {
-//      assertTrue(e.getMessage().contains(
-//        "evaluate() returned CompletableFuture.value(null) but the node is not marked as Nullable"));
-//      assertTrue(Await.result(mappedNode.apply().liftToTry()).isThrow());
-//      assertEquals(2, functionRuns.get());
-//    }
-//
-//    // Function should not run on node with an exception
-//    mappedNode = Node.wrapFuture(CompletableFuture.<Integer>exception(new Exception("Test Exception"))).map(func);
-//    try {
-//      resultFromNode(mappedNode);
-//      fail();
-//    } catch (Exception e) {
-//      assertEquals("Test Exception", e.getMessage());
-//      assertTrue(Await.result(mappedNode.apply().liftToTry()).isThrow());
-//      assertEquals(2, functionRuns.get());
-//    }
   }
 
   @Test
@@ -470,21 +353,4 @@ public class NodeTest extends NodeTestBase {
     assertEquals(store.get(3).intValue(), 999);  // the last node should insert its value last
   }
 
-//  @Test
-//  public void testMapMultiple() throws Exception {
-//    Node<Integer> aNode = Node.value(1);
-//    Node<Integer> bNode = Node.value(2);
-//    Node<Integer> cNode = Node.value(3);
-//    Node<Integer> dNode = Node.value(4);
-//
-//    Node<Integer> sum2 = Node.map2("add", aNode, bNode, (a, b) -> a + b);
-//    assertEquals(3, (int) resultFromNode(sum2));
-//
-//    Node<Integer> sum3 = Node.map3("add", aNode, bNode, cNode, (a, b, c) -> a + b + c);
-//    assertEquals(6, (int) resultFromNode(sum3));
-//
-//    Node<Integer> sum4 = Node.map4("add", aNode, bNode, cNode, dNode,
-//      (a, b, c, d) -> a + b + c + d);
-//    assertEquals(10, (int) resultFromNode(sum4));
-//  }
 }
