@@ -1,5 +1,6 @@
 package com.zbiljic.nodez;
 
+import com.zbiljic.nodez.utils.CompletableFutures;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class NodeTest extends NodeTestBase {
         SumNode.D.THIRD, dep3,
         SumNode.D.FOURTH_OP, dep4)
       .build();
-    sumNode.apply().get();
+    CompletableFutures.awaitResult(sumNode.apply());
 
     assertEquals(sumNode.getAllDependencies().size(), 4);
     assertEquals((int) sumNode.getDep(SumNode.D.FIRST), 1);
@@ -96,7 +97,7 @@ public class NodeTest extends NodeTestBase {
         SumNode.D.THIRD, dep3,
         SumNode.D.FOURTH_OP, dep4)
       .build();
-    sumNode.apply().get();
+    CompletableFutures.awaitResult(sumNode.apply());
     assertEquals((int) sumNode.emit(), 4321);
   }
 
@@ -137,7 +138,7 @@ public class NodeTest extends NodeTestBase {
       .dependsOn(SumNode.D.THIRD, dep3)
       .dependsOn(SumNode.D.FOURTH_OP, dep4)
       .build();
-    sumNode.apply().get();
+    CompletableFutures.awaitResult(sumNode.apply());
 
     assertEquals(sumNode.getAllDependencies().size(), 4);
     assertEquals((int) sumNode.getDep(SumNode.D.FIRST), 1);
@@ -157,7 +158,7 @@ public class NodeTest extends NodeTestBase {
       .dependsOn(SumNode.D.SECOND, dep2)
       .dependsOn(SumNode.D.THIRD, dep3)
       .build();
-    sumNode.apply().get();
+    CompletableFutures.awaitResult(sumNode.apply());
 
     assertEquals(sumNode.getAllDependencies().size(), 4);
     assertEquals((int) sumNode.getDep(SumNode.D.FIRST), 1);
@@ -170,7 +171,7 @@ public class NodeTest extends NodeTestBase {
   @Test
   public void testOptional() throws Exception {
     Node<Integer> node = new PlusOneNode(Node.optional(Node.noValue()));
-    Integer result = node.apply().get();
+    Integer result = CompletableFutures.awaitResult(node.apply());
     System.out.println("-- result = " + result);
   }
 

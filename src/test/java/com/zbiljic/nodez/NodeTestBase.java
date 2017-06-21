@@ -19,12 +19,12 @@ public class NodeTestBase {
   }
 
   /**
-   * Get result from future
+   * Get result from future.
    */
   public static <T> T resultFromFuture(CompletableFuture<T> future) throws Exception {
     T result;
     try {
-      result = CompletableFutures.within(future, DEFAULT_WAIT_DURATION).get();
+      result = CompletableFutures.awaitResult(future, DEFAULT_WAIT_DURATION);
     } catch (Exception e) {
       e.printStackTrace();
       throw e;
@@ -33,7 +33,7 @@ public class NodeTestBase {
   }
 
   /**
-   * Get result from a node, if the node fails or returns null, an exception will be thrown
+   * Get result from a node, if the node fails or returns null, an exception will be thrown.
    */
   public static <T> T resultFromNode(Node<T> node) throws Exception {
     return resultFromFuture(node.apply());
@@ -41,7 +41,7 @@ public class NodeTestBase {
 
   public static <T> void assertNodeThrow(Node<T> node) throws Exception {
     CompletableFuture<T> r = node.apply();
-    CompletableFutures.within(r, DEFAULT_WAIT_DURATION);
+    CompletableFutures.awaitOptionalResult(r, DEFAULT_WAIT_DURATION);
     boolean isThrow = r.isCompletedExceptionally();
     assertTrue(isThrow, "expecting a throw but get: " + r);
   }

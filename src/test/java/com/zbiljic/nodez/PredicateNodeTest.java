@@ -1,12 +1,12 @@
 package com.zbiljic.nodez;
 
-import com.zbiljic.nodez.utils.Throwables;
+import com.zbiljic.nodez.utils.CompletableFutures;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.CompletableFuture;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 public class PredicateNodeTest extends NodeTestBase {
 
@@ -22,12 +22,9 @@ public class PredicateNodeTest extends NodeTestBase {
     Node<Boolean> resultNode = PredicateNode.create(Node.<Long>value(null), input -> input == 3L);
 
     CompletableFuture<Boolean> future = resultNode.apply();
-    try {
-      future.get();
-      fail();
-    } catch (Throwable e) {
-      assertTrue(e.getCause() instanceof RuntimeException);
-    }
+    assertFalse(CompletableFutures.awaitOptionalResult(future).isPresent());
+    Throwable e = CompletableFutures.getException(future);
+    assertTrue(e instanceof RuntimeException);
   }
 
   @Test
@@ -37,12 +34,9 @@ public class PredicateNodeTest extends NodeTestBase {
     });
 
     CompletableFuture<Boolean> future = resultNode.apply();
-    try {
-      future.get();
-      fail();
-    } catch (Throwable e) {
-      assertTrue(e.getCause() instanceof RuntimeException);
-      assertTrue(Throwables.getRootCause(e) instanceof IllegalStateException);
-    }
+    assertFalse(CompletableFutures.awaitOptionalResult(future).isPresent());
+    Throwable e = CompletableFutures.getException(future);
+    assertTrue(e instanceof RuntimeException);
+    assertTrue(e.getCause() instanceof IllegalStateException);
   }
 }

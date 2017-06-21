@@ -573,9 +573,9 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
    * return successfully.
    */
   public R emit() {
-    if (!promise.isCompletedExceptionally()) {
+    if (CompletableFutures.completedWithSuccess(promise)) {
       try {
-        return promise.get();
+        return CompletableFutures.awaitResult(promise);
       } catch (Exception e) {
         log.error("Exception during emit()", e);
         throw new RuntimeException("Could not read promise", e);
@@ -592,7 +592,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
     // Report back to the user which state the node was in, but also remind them to add the node
     // as a dependency.
 
-    if (promise.isCompletedExceptionally()) {
+    if (CompletableFutures.completedWithFailure(promise)) {
       throw new IllegalStateException(
         String.format("NODE[%s]: Attempting to call emit() on failed required node.  "
           + "Did you forget to add this node as a required dependency?", getName()));

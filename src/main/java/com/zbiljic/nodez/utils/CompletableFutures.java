@@ -6,20 +6,18 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  * A collection of static utility methods that extend the {@link CompletableFuture Java completable
@@ -29,13 +27,121 @@ public final class CompletableFutures {
 
   private CompletableFutures() { /* No instance methods */ }
 
-  private static final ScheduledExecutorService SCHEDULER =
-    Executors.newScheduledThreadPool(
-      1,
-      new SchedulerThreadFactory("failAfter-%d"));
+  /** Constant for a duration of {@code Long.MAX_VALUE} nanoseconds. */
+  private static final Duration TOP = Duration.ofNanos(Long.MAX_VALUE);
 
   /**
-   * Returns a new {@code CompletableFuture} that is already exceptionally completed with the given
+   * Returns result of {@link CompletableFuture} if it completes within given duration.
+   *
+   * @param future  the {@link CompletableFuture} whose result will be returned for if it succeeds
+   * @param timeout the maximum duration to wait
+   * @param <T>     the type of the result of the {@link CompletableFuture}, that will be returned
+   *                if the future succeeds
+   * @return result of {@link CompletableFuture} if it completes within given duration
+   * @throws CancellationException if this future was cancelled
+   * @throws ExecutionException    if this future completed exceptionally
+   * @throws InterruptedException  if the current thread was interrupted while waiting
+   * @throws TimeoutException      if the result is not ready within timeout
+   */
+  public static <T> T awaitResult(CompletableFuture<T> future, Duration timeout) throws Exception {
+    return future.get(timeout.toNanos(), NANOSECONDS);
+  }
+
+  /**
+   * Returns result of {@link CompletableFuture} when it completes.
+   *
+   * @param future the {@link CompletableFuture} whose result will be returned for if it succeeds
+   * @param <T>    the type of the result of the {@link CompletableFuture}, that will be returned if
+   *               the future succeeds
+   * @return result of {@link CompletableFuture} when it completes
+   * @throws CancellationException if this future was cancelled
+   * @throws ExecutionException    if this future completed exceptionally
+   * @throws InterruptedException  if the current thread was interrupted while waiting
+   */
+  public static <T> T awaitResult(CompletableFuture<T> future) throws Exception {
+    return awaitResult(future, TOP);
+  }
+
+  /**
+   * Returns {@link Optional} that will contain result of {@link CompletableFuture} if it completes
+   * within given duration, or {@link Optional#empty()} if some exception occurs.
+   *
+   * @param future  the {@link CompletableFuture} whose result will be returned for if it succeeds
+   * @param timeout the maximum duration to wait
+   * @param <T>     the type of the result of the {@link CompletableFuture}, that will be returned
+   *                when if the future succeeds
+   * @return {@link Optional} that will contain result of {@link CompletableFuture} if it completes
+   * within given duration, or {@link Optional#empty()} if some exception occurs
+   */
+  public static <T> Optional<T> awaitOptionalResult(CompletableFuture<T> future, Duration timeout) {
+    try {
+      return Optional.of(future.get(timeout.toNanos(), NANOSECONDS));
+    } catch (Exception e) {
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Returns {@link Optional} that will contain result of {@link CompletableFuture} if it completes,
+   * or {@link Optional#empty()} if some exception occurs.
+   *
+   * @param future the {@link CompletableFuture} whose result will be returned for if it succeeds
+   * @param <T>    the type of the result of the {@link CompletableFuture}, that will be returned
+   *               when if the future succeeds.
+   * @return {@link Optional} that will contain result of {@link CompletableFuture} if it completes
+   * within given duration, or {@link Optional#empty()} if some exception occurs
+   */
+  public static <T> Optional<T> awaitOptionalResult(CompletableFuture<T> future) {
+    return awaitOptionalResult(future, TOP);
+  }
+
+  /**
+   * Check if a future has completed with success.
+   */
+  public static boolean completedWithSuccess(CompletableFuture<?> future) {
+    try {
+      return future.isDone() && !future.isCompletedExceptionally();
+    } catch (Exception e) {
+      Throwables.throwIfUnchecked(e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Check if a future has completed with failure.
+   */
+  public static boolean completedWithFailure(CompletableFuture<?> future) {
+    try {
+      return future.isDone() && future.isCompletedExceptionally();
+    } catch (Exception e) {
+      Throwables.throwIfUnchecked(e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static Throwable getException(CompletableFuture future) {
+    if (!completedWithFailure(future)) {
+      throw new IllegalStateException();
+    }
+    try {
+      //noinspection unchecked
+      return (Throwable) future.exceptionally(new Function<Throwable, Throwable>() {
+        @Override
+        public Throwable apply(Throwable ex) {
+          if (ex instanceof CompletionException) {
+            return ex.getCause();
+          }
+          return ex;
+        }
+      }).get();
+    } catch (InterruptedException | ExecutionException e) {
+      Throwables.throwIfUnchecked(e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Returns a new {@link CompletableFuture} that is already exceptionally completed with the given
    * exception.
    *
    * @param throwable the exception
@@ -49,33 +155,6 @@ public final class CompletableFutures {
     final CompletableFuture<T> future = new CompletableFuture<>();
     future.completeExceptionally(throwable);
     return future;
-  }
-
-  public static <T> CompletableFuture<T> failAfter(Duration duration) {
-    return failAfter(duration, SCHEDULER);
-  }
-
-  public static <T> CompletableFuture<T> failAfter(Duration duration,
-                                                   ScheduledExecutorService scheduledExecutorService) {
-    final CompletableFuture<T> promise = new CompletableFuture<>();
-    scheduledExecutorService.schedule(() -> {
-        final TimeoutException ex = new TimeoutException("Timeout after " + duration);
-        return promise.completeExceptionally(ex);
-      },
-      duration.toMillis(), MILLISECONDS);
-    return promise;
-  }
-
-  public static <T> CompletableFuture<T> within(CompletableFuture<T> future,
-                                                Duration duration) {
-    return within(future, duration, SCHEDULER);
-  }
-
-  public static <T> CompletableFuture<T> within(CompletableFuture<T> future,
-                                                Duration duration,
-                                                ScheduledExecutorService scheduledExecutorService) {
-    final CompletableFuture<T> timeout = failAfter(duration, scheduledExecutorService);
-    return future.applyToEither(timeout, Function.identity());
   }
 
   public static <T> CompletableFuture<T> withFallback(
@@ -171,40 +250,6 @@ public final class CompletableFutures {
 
   private static <A, R> CompletableFuture<R> map(final CompletableFuture<A> future, final Function0<R> f) {
     return future.thenCompose(unused -> CompletableFuture.completedFuture(f.apply()));
-  }
-
-  /**
-   * The scheduler thread factory.
-   */
-  static class SchedulerThreadFactory implements ThreadFactory {
-
-    private final String nameFormat;
-    private final Boolean daemon;
-    private final ThreadFactory backingThreadFactory;
-    private final AtomicLong count;
-
-    SchedulerThreadFactory(String nameFormat) {
-      String unused = format(nameFormat, 0); // fail fast if the format is bad or null
-      this.nameFormat = nameFormat;
-      daemon = true;
-      backingThreadFactory = Executors.defaultThreadFactory();
-      count = (nameFormat != null) ? new AtomicLong(0) : null;
-    }
-
-    public Thread newThread(Runnable runnable) {
-      Thread thread = backingThreadFactory.newThread(runnable);
-      if (nameFormat != null) {
-        thread.setName(format(nameFormat, count.getAndIncrement()));
-      }
-      if (daemon != null) {
-        thread.setDaemon(daemon);
-      }
-      return thread;
-    }
-
-    private static String format(String format, Object... args) {
-      return String.format(Locale.ROOT, format, args);
-    }
   }
 
 }

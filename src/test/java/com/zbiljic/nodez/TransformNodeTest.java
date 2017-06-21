@@ -1,15 +1,15 @@
 package com.zbiljic.nodez;
 
-import com.zbiljic.nodez.utils.Throwables;
+import com.zbiljic.nodez.utils.CompletableFutures;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 public class TransformNodeTest extends NodeTestBase {
 
@@ -67,12 +67,9 @@ public class TransformNodeTest extends NodeTestBase {
     Node<Long> resultNode = TransformNode.create(termNode, THROW_FN, name);
     CompletableFuture<Long> graph = resultNode.apply();
 
-    try {
-      graph.get();
-      fail();
-    } catch (Throwable e) {
-      assertTrue(e.getCause() instanceof RuntimeException);
-      assertTrue(Throwables.getRootCause(e) instanceof NullPointerException);
-    }
+    assertFalse(CompletableFutures.awaitOptionalResult(graph).isPresent());
+    Throwable e = CompletableFutures.getException(graph);
+    assertTrue(e instanceof RuntimeException);
+    assertTrue(e.getCause() instanceof NullPointerException);
   }
 }
