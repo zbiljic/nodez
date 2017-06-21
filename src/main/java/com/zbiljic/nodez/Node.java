@@ -937,6 +937,122 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
     return map(NamedFunction.create(name, function));
   }
 
+  // Mapping with multiple inputs
+
+  /**
+   * Represents a function with two arguments.
+   *
+   * @param <T1> argument 1 of the function
+   * @param <T2> argument 2 of the function
+   * @param <R>  return type of the function
+   */
+  @FunctionalInterface
+  public interface Function2<T1, T2, R> {
+
+    R apply(T1 t1, T2 t2);
+  }
+
+  /**
+   * Represents a function with three arguments.
+   *
+   * @param <T1> argument 1 of the function
+   * @param <T2> argument 2 of the function
+   * @param <T3> argument 3 of the function
+   * @param <R>  return type of the function
+   */
+  @FunctionalInterface
+  public interface Function3<T1, T2, T3, R> {
+
+    R apply(T1 t1, T2 t2, T3 t3);
+  }
+
+  /**
+   * Represents a function with 4 arguments.
+   *
+   * @param <T1> argument 1 of the function
+   * @param <T2> argument 2 of the function
+   * @param <T3> argument 3 of the function
+   * @param <T4> argument 4 of the function
+   * @param <R>  return type of the function
+   */
+  @FunctionalInterface
+  public interface Function4<T1, T2, T3, T4, R> {
+
+    R apply(T1 t1, T2 t2, T3 t3, T4 t4);
+  }
+
+  public static <T1, T2, R> Node<R> map2(
+    String name,
+    Node<T1> node1, Node<T2> node2,
+    Function2<T1, T2, R> func) {
+    return new Node<R>(name, node1, node2) {
+      @Override
+      protected CompletableFuture<R> evaluate() throws Exception {
+        return CompletableFuture.completedFuture(func.apply(node1.emit(), node2.emit()));
+      }
+    };
+  }
+
+  public static <T1, T2, T3, R> Node<R> map3(
+    String name,
+    Node<T1> node1, Node<T2> node2, Node<T3> node3,
+    Function3<T1, T2, T3, R> func) {
+    return new Node<R>(name, node1, node2, node3) {
+      @Override
+      protected CompletableFuture<R> evaluate() throws Exception {
+        return CompletableFuture.completedFuture(func.apply(node1.emit(), node2.emit(), node3.emit()));
+      }
+    };
+  }
+
+  public static <T1, T2, T3, T4, R> Node<R> map4(
+    String name,
+    Node<T1> node1, Node<T2> node2, Node<T3> node3, Node<T4> node4,
+    Function4<T1, T2, T3, T4, R> func) {
+    return new Node<R>(name, node1, node2, node3, node4) {
+      @Override
+      protected CompletableFuture<R> evaluate() throws Exception {
+        return CompletableFuture.completedFuture(func.apply(node1.emit(), node2.emit(), node3.emit(), node4.emit()));
+      }
+    };
+  }
+
+  public static <T1, T2, R> Node<R> flatMap2(
+    String name,
+    Node<T1> node1, Node<T2> node2,
+    Function2<T1, T2, CompletableFuture<R>> func) {
+    return new Node<R>(name, node1, node2) {
+      @Override
+      protected CompletableFuture<R> evaluate() throws Exception {
+        return func.apply(node1.emit(), node2.emit());
+      }
+    };
+  }
+
+  public static <T1, T2, T3, R> Node<R> flatMap3(
+    String name,
+    Node<T1> node1, Node<T2> node2, Node<T3> node3,
+    Function3<T1, T2, T3, CompletableFuture<R>> func) {
+    return new Node<R>(name, node1, node2, node3) {
+      @Override
+      protected CompletableFuture<R> evaluate() throws Exception {
+        return func.apply(node1.emit(), node2.emit(), node3.emit());
+      }
+    };
+  }
+
+  public static <T1, T2, T3, T4, R> Node<R> flatMap4(
+    String name,
+    Node<T1> node1, Node<T2> node2, Node<T3> node3, Node<T4> node4,
+    Function4<T1, T2, T3, T4, CompletableFuture<R>> func) {
+    return new Node<R>(name, node1, node2, node3, node4) {
+      @Override
+      protected CompletableFuture<R> evaluate() throws Exception {
+        return func.apply(node1.emit(), node2.emit(), node3.emit(), node4.emit());
+      }
+    };
+  }
+
   /**
    * Maps the value of current node to a new type T by applying the provided function, but only when
    * the value is present. For {@code null} values, the function is not even run and the transformed

@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -210,6 +211,50 @@ public class NodeTest extends NodeTestBase {
     assertEquals(resultFromNode(mappedNode), "number 100");
     assertEquals(functionRuns.get(), 1);
 
+    // Function should run for null values since ValueNode is a nullable node
+    mappedNode = Node.<Integer>noValue().map(func);
+    try {
+      resultFromNode(mappedNode);
+      fail();
+    } catch (Exception e) {
+      assertTrue(e.getCause() instanceof RuntimeException);
+      assertFalse(CompletableFutures.awaitOptionalResult(mappedNode.apply()).isPresent());
+      assertEquals(functionRuns.get(), 2);
+    }
+
+    // Function should NOT run for null values when mapOnSuccess is used
+    mappedNode = Node.<Integer>noValue().mapOnSuccess(func);
+    assertNull(resultFromNode(mappedNode));
+    assertEquals(functionRuns.get(), 2);
+
+    // Function should not run for non-nullable nodes that return null
+    mappedNode = new Node<Integer>() {
+      @Override
+      protected CompletableFuture<Integer> evaluate() throws Exception {
+        return CompletableFuture.completedFuture(null);
+      }
+    }.map(func);
+    try {
+      resultFromNode(mappedNode);
+      fail();
+    } catch (Exception e) {
+      assertTrue(e.getMessage().contains(
+        "evaluate() returned CompletableFuture.value(null) but the node is not marked as Nullable"));
+      assertFalse(CompletableFutures.awaitOptionalResult(mappedNode.apply()).isPresent());
+      assertEquals(functionRuns.get(), 2);
+    }
+
+    // Function should not run on node with an exception
+    mappedNode = Node.wrapCompletableFuture(CompletableFutures.<Integer>exceptionallyCompletedFuture(new Exception("Test Exception")))
+      .map(func);
+    try {
+      resultFromNode(mappedNode);
+      fail();
+    } catch (Exception e) {
+      assertEquals("Test Exception", e.getCause().getMessage());
+      assertFalse(CompletableFutures.awaitOptionalResult(mappedNode.apply()).isPresent());
+      assertEquals(functionRuns.get(), 2);
+    }
   }
 
   @Test
@@ -354,4 +399,21 @@ public class NodeTest extends NodeTestBase {
     assertEquals(store.get(3).intValue(), 999);  // the last node should insert its value last
   }
 
+  @Test
+  public void testMapMultiple() throws Exception {
+    Node<Integer> aNode = Node.value(1);
+    Node<Integer> bNode = Node.value(2);
+    Node<Integer> cNode = Node.value(3);
+    Node<Integer> dNode = Node.value(4);
+
+    Node<Integer> sum2 = Node.map2("add", aNode, bNode, (a, b) -> a + b);
+    assertEquals(3, (int) resultFromNode(sum2));
+
+    Node<Integer> sum3 = Node.map3("add", aNode, bNode, cNode, (a, b, c) -> a + b + c);
+    assertEquals(6, (int) resultFromNode(sum3));
+
+    Node<Integer> sum4 = Node.map4("add", aNode, bNode, cNode, dNode,
+      (a, b, c, d) -> a + b + c + d);
+    assertEquals(10, (int) resultFromNode(sum4));
+  }
 }
