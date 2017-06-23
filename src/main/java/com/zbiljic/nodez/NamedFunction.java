@@ -3,7 +3,7 @@ package com.zbiljic.nodez;
 import java.util.function.Function;
 
 /**
- * T {@link Function} with a name.
+ * A {@link Function} with a name.
  * <p>
  * Use this to create static constant functions to be used in node transformations, etc.
  *

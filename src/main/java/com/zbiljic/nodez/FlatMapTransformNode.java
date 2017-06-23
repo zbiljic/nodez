@@ -9,8 +9,8 @@ import java.util.function.Function;
  * <p>
  * See {@link Node#flatMap}.
  *
- * @param <SourceType> Source node type.
- * @param <R>          Resulting node value type.
+ * @param <SourceType> source node type
+ * @param <R>          resulting node value type
  * @see Node
  * @see BaseTransformNode
  */

@@ -10,8 +10,8 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Base class for nodes that transforms a node value, producing a new one.
  *
- * @param <SourceType> Source node type.
- * @param <R>          Resulting node value type.
+ * @param <SourceType> source node type
+ * @param <R>          resulting node value type
  * @see Node
  */
 public abstract class BaseTransformNode<SourceType, R> extends Node<R> {

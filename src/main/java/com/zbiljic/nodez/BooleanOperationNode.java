@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
- * Boolean operation node
+ * Boolean operation node.
  *
  * @see Node
  */

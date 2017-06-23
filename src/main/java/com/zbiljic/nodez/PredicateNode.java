@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 /**
  * Applies a predicate on a given source node, producing a boolean output.
  *
- * @param <SourceType> Source node type.
+ * @param <SourceType> source node type
  * @see Node
  */
 public class PredicateNode<SourceType> extends Node<Boolean> {

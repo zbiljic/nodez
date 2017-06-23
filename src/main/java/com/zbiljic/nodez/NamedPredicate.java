@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 /**
- * T named {@link Predicate}
+ * A {@link Predicate} with a name.
  * <p>
  * Use this to create static constant predicates to be used in node predicate switches.
  *
