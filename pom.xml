@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.basepom</groupId>
     <artifactId>basepom-minimal</artifactId>
-    <version>21</version>
+    <version>23</version>
   </parent>
 
   <groupId>com.zbiljic</groupId>
