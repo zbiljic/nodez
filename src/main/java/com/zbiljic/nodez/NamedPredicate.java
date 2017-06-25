@@ -31,11 +31,6 @@ public abstract class NamedPredicate<T> implements Predicate<T> {
     return name;
   }
 
-  @Override
-  public boolean equals(@Nullable Object object) {
-    return false;
-  }
-
   public Node<Boolean> apply(Node<T> inputNode) {
     return inputNode.predicate(this);
   }

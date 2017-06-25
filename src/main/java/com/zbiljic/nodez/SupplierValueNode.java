@@ -19,7 +19,7 @@ public class SupplierValueNode<R> extends ValueNode<R> {
   }
 
   private final Supplier<R> supplier;
-  private R suppliedValue;
+  private volatile R suppliedValue;
   private volatile boolean alreadySupplied = false;
 
   /**
