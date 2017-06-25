@@ -2,6 +2,7 @@ package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.debug.DebugManager;
 import com.zbiljic.nodez.utils.CompletableFutures;
+import com.zbiljic.nodez.utils.DeciderSupplier;
 import com.zbiljic.nodez.utils.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +109,14 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
   // This will be set if this node is the exposed "output" node of a Subgraph, it's done by
   // Subgraph.markExposedNodes().
   private Subgraph enclosingSubgraph;
+
+  //
+  // Decider key that's used to check if this node should be run or not, if:
+  //   1. the decider key is present for this node instance
+  //   2. the node is optional for the workflow.
+  // Otherwise, the decider check is skipped.
+  //
+  protected DeciderSupplier deciderSupplier;
 
   private long startTimeMs;
   private long evaluateStartTimeMs;
@@ -394,6 +403,10 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
     this.enclosingSubgraph = enclosingSubgraph;
   }
 
+  protected void setDeciderSupplier(@Nullable DeciderSupplier deciderSupplier) {
+    this.deciderSupplier = deciderSupplier;
+  }
+
   //
   // Methods
   //
@@ -508,10 +521,18 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
         try {
           evaluateStartTimeMs = System.currentTimeMillis();
 
-          result = evaluate();
-          if (result == null) {
-            result = CompletableFutures.exceptionallyCompletedFuture(
-              new RuntimeException("evaluate() returned null CompletableFuture object!"));
+          if (deciderSupplier != null && !deciderSupplier.isFeatureAvailable()) {
+            debugVerbose("is decided off for this request, decider key: %s",
+              deciderSupplier.getDeciderKey());
+            result = isOptional()
+              ? FUTURE_EMPTY
+              : CompletableFuture.completedFuture(null);
+          } else {
+            result = evaluate();
+            if (result == null) {
+              result = CompletableFutures.exceptionallyCompletedFuture(
+                new RuntimeException("evaluate() returned null CompletableFuture object!"));
+            }
           }
         } catch (Exception e) {
           String message = "evaluate threw an exception";
@@ -796,6 +817,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
     protected String nodeKey;
     protected Map<Enum, Node> dependentNodesByName;
     protected Node[] sinkNodes = EMPTY_NODE_ARRAY;
+    protected DeciderSupplier deciderSupplier;
 
     public Builder(Class<? extends Node<T>> nodeClass) {
       this(nodeClass, null);
@@ -855,6 +877,11 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
     public Builder<T> withSinkNodes(List<Node> sinkNodes) {
       return withSinkNodes(sinkNodes.toArray(new Node[sinkNodes.size()]));
+    }
+
+    public Builder<T> withDeciderSupplier(DeciderSupplier deciderSupplier) {
+      this.deciderSupplier = deciderSupplier;
+      return this;
     }
 
     /**
@@ -918,6 +945,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
       nodeInstance.setAllDependencies(getDependencyMap());
       nodeInstance.withKey(nodeKey);
       nodeInstance.setSinkNodes(sinkNodes);
+      nodeInstance.setDeciderSupplier(deciderSupplier);
       return nodeInstance;
     }
   }
@@ -1068,12 +1096,34 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
     return ifSuccessThen(this, map(name, function));
   }
 
+  public <T> Node<T> mapWithDeciderSupplier(DeciderSupplier deciderKey,
+                                            NamedFunction<R, T> function) {
+    return TransformNode.create(this, function, function.getName(), deciderKey);
+  }
+
+  public <T> Node<T> mapWithDeciderSupplier(String name,
+                                            DeciderSupplier deciderKey,
+                                            Function<R, T> function) {
+    return mapWithDeciderSupplier(deciderKey, NamedFunction.create(name, function));
+  }
+
   public <T> Node<T> flatMap(NamedFunction<R, CompletableFuture<T>> function) {
-    return FlatMapTransformNode.create(this, function, function.getName());
+    return FlatMapTransformNode.create(this, function, function.getName(), null);
   }
 
   public <T> Node<T> flatMap(String name, Function<R, CompletableFuture<T>> function) {
     return flatMap(NamedFunction.create(name, function));
+  }
+
+  public <T> Node<T> flatMapWithDeciderSupplier(DeciderSupplier deciderKey,
+                                                NamedFunction<R, CompletableFuture<T>> function) {
+    return FlatMapTransformNode.create(this, function, function.getName(), deciderKey);
+  }
+
+  public <T> Node<T> flatMapWithDeciderSupplier(String name,
+                                                DeciderSupplier deciderKey,
+                                                Function<R, CompletableFuture<T>> function) {
+    return flatMapWithDeciderSupplier(deciderKey, NamedFunction.create(name, function));
   }
 
   /**

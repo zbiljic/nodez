@@ -1,6 +1,7 @@
 package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.utils.CompletableFutures;
+import com.zbiljic.nodez.utils.DeciderSupplier;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
@@ -21,14 +22,14 @@ import java.util.function.Function;
 public class TransformNode<SourceType, R> extends BaseTransformNode<SourceType, R> {
 
   /**
-   * Create a new {@code TransformNode} with no name.
+   * Create a new {@code TransformNode} with no decider key and no name.
    * <p>
    * NOTE: try not to use this directly, use Node.map() instead.
    */
   public static <SourceType, R> TransformNode<SourceType, R> create(
     Node<SourceType> node,
     Function<SourceType, R> transform) {
-    return new TransformNode<>(node, transform, null);
+    return new TransformNode<>(node, transform, null, null);
   }
 
   /**
@@ -40,15 +41,29 @@ public class TransformNode<SourceType, R> extends BaseTransformNode<SourceType, 
     Node<SourceType> node,
     Function<SourceType, R> transform,
     String name) {
-    return new TransformNode<>(node, transform, name);
+    return new TransformNode<>(node, transform, name, null);
+  }
+
+  /**
+   * Create a new {@code TransformNode} with decider key.
+   * <p>
+   * NOTE: try not to use this directly, use Node.map() instead.
+   */
+  public static <SourceType, R> TransformNode<SourceType, R> create(
+    Node<SourceType> node,
+    Function<SourceType, R> transform,
+    String name,
+    DeciderSupplier deciderSupplier) {
+    return new TransformNode<>(node, transform, name, deciderSupplier);
   }
 
   private final Function<SourceType, R> transform;
 
   protected TransformNode(Node<SourceType> node,
                           Function<SourceType, R> transform,
-                          @Nullable String name) {
-    super(node, name, false, true);
+                          @Nullable String name,
+                          @Nullable DeciderSupplier deciderSupplier) {
+    super(node, name, deciderSupplier, false, true);
     this.transform = Preconditions.checkNotNull(transform);
   }
 

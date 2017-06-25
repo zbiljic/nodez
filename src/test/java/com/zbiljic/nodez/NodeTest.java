@@ -1,6 +1,7 @@
 package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.utils.CompletableFutures;
+import com.zbiljic.nodez.utils.DeciderSupplier;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -193,6 +194,67 @@ public class NodeTest extends NodeTestBase {
       } else {
         return CompletableFuture.completedFuture(0);
       }
+    }
+  }
+
+  @Test
+  public void testDecider() throws Exception {
+    {
+      // Required node, with decider
+      Node<Boolean> requiredNode = Node.value(true);
+      requiredNode.setDeciderSupplier(DeciderSupplier.ALWAYS_FALSE);
+      assertNull(resultFromNode(requiredNode));
+    }
+
+    {
+      // Optional node, absent decider supplier
+      Node<Optional<Boolean>> optionalNode = Node.optional(Node.value(true));
+      optionalNode.setDeciderSupplier(null);
+      assertEquals(Optional.of(true), resultFromNode(optionalNode));
+    }
+
+    {
+      // Optional node with false decider
+      Node<Optional<Boolean>> optionalNode = Node.optional(Node.value(true));
+      optionalNode.setDeciderSupplier(DeciderSupplier.ALWAYS_FALSE);
+      assertEquals(Optional.<Boolean>empty(), resultFromNode(optionalNode));
+    }
+
+    {
+      // Optional node with true decider
+      Node<Optional<Boolean>> optionalNode = Node.optional(Node.value(true));
+      optionalNode.setDeciderSupplier(DeciderSupplier.ALWAYS_TRUE);
+      assertEquals(Optional.of(true), resultFromNode(optionalNode));
+    }
+
+    {
+      // Map with true decider
+      Node<String> resultNode = Node.value("x")
+        .mapWithDeciderSupplier("map", DeciderSupplier.ALWAYS_TRUE, x -> "[" + x + "]");
+      assertEquals("[x]", resultFromNode(resultNode));
+    }
+
+    {
+      // Map with false decider
+      Node<String> resultNode = Node.value("x")
+        .mapWithDeciderSupplier("map", DeciderSupplier.ALWAYS_FALSE, x -> "[" + x + "]");
+      assertNull(resultFromNode(resultNode));
+    }
+
+    {
+      // flatMap with true decider
+      Node<String> resultNode = Node.value("x")
+        .flatMapWithDeciderSupplier(DeciderSupplier.ALWAYS_TRUE,
+          NamedFunction.create("map", x -> CompletableFuture.completedFuture("[" + x + "]")));
+      assertEquals("[x]", resultFromNode(resultNode));
+    }
+
+    {
+      // flatMap with false decider
+      Node<String> resultNode = Node.value("x")
+        .flatMapWithDeciderSupplier(DeciderSupplier.ALWAYS_FALSE,
+          NamedFunction.create("map", x -> CompletableFuture.completedFuture("[" + x + "]")));
+      assertNull(resultFromNode(resultNode));
     }
   }
 

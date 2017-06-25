@@ -1,5 +1,7 @@
 package com.zbiljic.nodez;
 
+import com.zbiljic.nodez.utils.DeciderSupplier;
+
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -24,16 +26,18 @@ public class FlatMapTransformNode<SourceType, R> extends BaseTransformNode<Sourc
   static <SourceType, R> FlatMapTransformNode<SourceType, R> create(
     Node<SourceType> node,
     Function<SourceType, CompletableFuture<R>> transform,
-    String name) {
-    return new FlatMapTransformNode<>(node, transform, name);
+    String name,
+    DeciderSupplier deciderSupplier) {
+    return new FlatMapTransformNode<>(node, transform, name, deciderSupplier);
   }
 
   private final Function<SourceType, CompletableFuture<R>> transform;
 
   protected FlatMapTransformNode(Node<SourceType> node,
                                  Function<SourceType, CompletableFuture<R>> transform,
-                                 @Nullable String name) {
-    super(node, name, false, true);
+                                 @Nullable String name,
+                                 @Nullable DeciderSupplier deciderSupplier) {
+    super(node, name, deciderSupplier, false, true);
     this.transform = Preconditions.checkNotNull(transform);
   }
 

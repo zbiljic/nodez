@@ -1,6 +1,7 @@
 package com.zbiljic.nodez;
 
 import com.zbiljic.nodez.utils.CompletableFutures;
+import com.zbiljic.nodez.utils.DeciderSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +22,14 @@ public abstract class BaseTransformNode<SourceType, R> extends Node<R> {
   protected final Node<SourceType> node;
 
   protected BaseTransformNode(Node<SourceType> node,
-                              @Nullable String name) {
-    this(node, name, false, false);
+                              @Nullable String name,
+                              @Nullable DeciderSupplier deciderSupplier) {
+    this(node, name, deciderSupplier, false, false);
   }
 
   protected BaseTransformNode(Node<SourceType> node,
                               @Nullable String name,
+                              @Nullable DeciderSupplier deciderSupplier,
                               boolean optional,
                               boolean canEmitNull) {
     super(name != null ? name : String.format("Transform[%s]", node.getName()),
@@ -34,6 +37,7 @@ public abstract class BaseTransformNode<SourceType, R> extends Node<R> {
       canEmitNull,
       node);
     this.node = node;
+    setDeciderSupplier(deciderSupplier);
   }
 
   @Override
