@@ -1,0 +1,24 @@
+language: java
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.m2/repository
+    - $HOME/apache-maven-3.5.0
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - export M2_HOME=$HOME/apache-maven-3.5.0
+  - if [ ! -d $M2_HOME/bin ]; then curl https://archive.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz | tar zxf - -C $HOME; fi
+  - export PATH=$M2_HOME/bin:$PATH
+  - hash -r
+
+before_script:
+  - export M2_HOME=$HOME/apache-maven-3.5.0
+  - export PATH=$M2_HOME/bin:$PATH
+  - hash -r
+
+script: "mvn clean verify"
