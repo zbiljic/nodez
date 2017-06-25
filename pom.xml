@@ -48,10 +48,10 @@
     <!-- Project options -->
     <basepom.release.tag-name-format>v@{project.version}</basepom.release.tag-name-format>
     <!-- Dependencies -->
-    <dep.findbugs.version>3.0.1</dep.findbugs.version>
-    <dep.slf4j.version>1.7.22</dep.slf4j.version>
-    <dep.testng.version>6.10</dep.testng.version>
-    <dep.logback.version>1.1.9</dep.logback.version>
+    <dep.findbugs.version>3.0.2</dep.findbugs.version>
+    <dep.slf4j.version>1.7.25</dep.slf4j.version>
+    <dep.testng.version>6.11</dep.testng.version>
+    <dep.logback.version>1.2.3</dep.logback.version>
   </properties>
 
   <dependencies>
