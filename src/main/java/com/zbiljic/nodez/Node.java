@@ -75,9 +75,9 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
 
   protected static final Node[] EMPTY_NODE_ARRAY = new Node[0];
 
-  public static final Node<Boolean> TRUE = Node.value("true", true);
-  public static final Node<Boolean> FALSE = Node.value("false", false);
-  public static final Node NULL_NODE = Node.value("null", null);
+  public static final Node<Boolean> TRUE = Node.value(true, "true");
+  public static final Node<Boolean> FALSE = Node.value(false, "false");
+  public static final Node NULL_NODE = Node.value(null, "null");
 
   //
   // Instance variables
@@ -1212,11 +1212,11 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
    * Create a predicate out of this node
    */
   public Node<Boolean> predicate(String name, Predicate<R> predicate) {
-    return PredicateNode.create(name, this, predicate);
+    return PredicateNode.create(this, predicate, name);
   }
 
   public Node<Boolean> predicate(NamedPredicate<R> predicate) {
-    return PredicateNode.create(predicate.getName(), this, predicate);
+    return PredicateNode.create(this, predicate, predicate.getName());
   }
 
   public Node<Boolean> isNull() {
@@ -1276,11 +1276,11 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
    * Create a fixed value Node.
    *
    * @param <T>   type of the node
-   * @param name  name of the node used in graph serialization
    * @param value value of the node
+   * @param name  name of the node used in graph serialization
    */
-  public static <T> Node<T> value(String name, T value) {
-    return ValueNode.create(name, value);
+  public static <T> Node<T> value(T value, String name) {
+    return ValueNode.create(value, name);
   }
 
   /**
@@ -1289,8 +1289,8 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
    * This is only called when the value node is actually used (have its {@link #emit()} or {@link
    * #apply()} called, not during its creation)
    */
-  public static <T> Node<T> valueFromSupplier(String name, Supplier<T> valueSupplier) {
-    return SupplierValueNode.create(name, valueSupplier);
+  public static <T> Node<T> valueFromSupplier(Supplier<T> valueSupplier, String name) {
+    return SupplierValueNode.create(valueSupplier, name);
   }
 
   /**
@@ -1300,7 +1300,7 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
    */
   public static <K> Node<K> noValue() {
     if (DebugManager.isEnabled()) {
-      return Node.value("null", null);
+      return Node.value(null, "null");
     } else {
       // non-debug time optimization
       return (Node<K>) NULL_NODE;
@@ -1345,13 +1345,13 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
    * Wrap a {@link CompletableFuture} object into a node.
    */
   public static <T> Node<T> wrapCompletableFuture(final CompletableFuture<T> future) {
-    return wrapCompletableFuture("wrapCompletableFuture[" + getLastTemplateType(future.getClass()) + "]", future);
+    return wrapCompletableFuture(future, "wrapCompletableFuture[" + getLastTemplateType(future.getClass()) + "]");
   }
 
   /**
    * Wrap a {@link CompletableFuture} object into a node with a name.
    */
-  public static <T> Node<T> wrapCompletableFuture(final String name, final CompletableFuture<T> future) {
+  public static <T> Node<T> wrapCompletableFuture(final CompletableFuture<T> future, final String name) {
     // Create a dummy wrapping node, not optional, no dependencies or sinks
     return new NullableNode<T>(name) {
       @Override

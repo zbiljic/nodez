@@ -372,7 +372,7 @@ public class NodeTest extends NodeTestBase {
     Node<String> strNode = Node.value("test");
     assertEquals("test", strNode.emit());
 
-    Node<String> supplierNode = Node.valueFromSupplier("stringSupplierNode", new Supplier<String>() {
+    Node<String> supplierNode = Node.valueFromSupplier(new Supplier<String>() {
       private boolean called = false;
 
       @Override
@@ -383,7 +383,7 @@ public class NodeTest extends NodeTestBase {
         called = true;
         return "test";
       }
-    });
+    }, "stringSupplierNode");
     assertEquals(supplierNode.emit(), "test");
     assertEquals(supplierNode.emit(), "test");
     assertEquals(supplierNode.emit(), "test");

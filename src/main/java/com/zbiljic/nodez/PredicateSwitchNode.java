@@ -51,7 +51,7 @@ public class PredicateSwitchNode<R> extends Node<R> {
   }
 
   @Override
-  protected CompletableFuture<R> evaluate() throws Exception {
+  protected final CompletableFuture<R> evaluate() throws Exception {
     return predicateNode.emit()
       ? trueNode.apply()
       : falseNode.apply();

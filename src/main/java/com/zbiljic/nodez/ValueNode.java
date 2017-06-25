@@ -12,11 +12,11 @@ import java.util.concurrent.CompletableFuture;
 public class ValueNode<R> extends NullableNode<R> {
 
   static <T> ValueNode<T> create(T value) {
-    return new ValueNode<>(null, value);
+    return new ValueNode<>(value, null);
   }
 
-  static <T> ValueNode<T> create(String name, T value) {
-    return new ValueNode<>(name, value);
+  static <T> ValueNode<T> create(T value, String name) {
+    return new ValueNode<>(value, name);
   }
 
   private final R value;
@@ -24,7 +24,7 @@ public class ValueNode<R> extends NullableNode<R> {
   /**
    * Creates a {@link Node} with a fixed value.
    */
-  protected ValueNode(String name, R value) {
+  protected ValueNode(R value, String name) {
     super(name != null
       ? name
       : String.format("value[%s]", valueStringInName(value)));

@@ -20,13 +20,13 @@ public class PredicateNode<SourceType> extends Node<Boolean> {
 
   public static <SourceType> PredicateNode<SourceType> create(Node<SourceType> node,
                                                               Predicate<SourceType> predicate) {
-    return create(null, node, predicate);
+    return create(node, predicate, null);
   }
 
-  public static <SourceType> PredicateNode<SourceType> create(@Nullable String name,
-                                                              Node<SourceType> node,
-                                                              Predicate<SourceType> predicate) {
-    return new PredicateNode<>(name, node, predicate);
+  public static <SourceType> PredicateNode<SourceType> create(Node<SourceType> node,
+                                                              Predicate<SourceType> predicate,
+                                                              @Nullable String name) {
+    return new PredicateNode<>(node, predicate, name);
   }
 
   private final Node<SourceType> sourceNode;
@@ -34,12 +34,12 @@ public class PredicateNode<SourceType> extends Node<Boolean> {
 
   public PredicateNode(Node<SourceType> sourceNode,
                        Predicate<SourceType> predicate) {
-    this(null, sourceNode, predicate);
+    this(sourceNode, predicate, null);
   }
 
-  public PredicateNode(@Nullable String name,
-                       Node<SourceType> sourceNode,
-                       Predicate<SourceType> predicate) {
+  public PredicateNode(Node<SourceType> sourceNode,
+                       Predicate<SourceType> predicate,
+                       @Nullable String name) {
     super(name != null ? name : String.format("Predicate[%s]", sourceNode.getName()), sourceNode);
     this.sourceNode = sourceNode;
     this.predicate = Preconditions.checkNotNull(predicate);

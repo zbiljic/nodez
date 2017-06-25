@@ -14,8 +14,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class SupplierValueNode<R> extends ValueNode<R> {
 
-  static <T> SupplierValueNode<T> create(String name, Supplier<T> valueSupplier) {
-    return new SupplierValueNode<>(name, valueSupplier);
+  static <T> SupplierValueNode<T> create(Supplier<T> valueSupplier, String name) {
+    return new SupplierValueNode<>(valueSupplier, name);
   }
 
   private final Supplier<R> supplier;
@@ -26,8 +26,8 @@ public class SupplierValueNode<R> extends ValueNode<R> {
    * Create a {@link ValueNode} from a supplier, the supplier {@link Supplier#get()} will only will
    * called once.
    */
-  protected SupplierValueNode(String name, Supplier<R> supplier) {
-    super(name, null);
+  protected SupplierValueNode(Supplier<R> supplier, String name) {
+    super(null, name);
     this.supplier = requireNonNull(supplier);
   }
 

@@ -23,7 +23,7 @@ public abstract class NamedPredicate<T> implements Predicate<T> {
 
   private final String name;
 
-  private NamedPredicate(String name) {
+  protected NamedPredicate(String name) {
     this.name = name;
   }
 

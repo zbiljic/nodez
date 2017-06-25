@@ -67,7 +67,7 @@ public abstract class BooleanOperationNode extends Node<Boolean> {
   }
 
   @Override
-  protected CompletableFuture<Boolean> evaluate() throws Exception {
+  protected CompletableFuture<Boolean> evaluate() {
     return evaluate(operands);
   }
 
