@@ -13,7 +13,7 @@ final class OptionalNodeWrapper<T> extends Node<Optional<T>> {
 
   private final Node<T> wrappedNode;
 
-  public OptionalNodeWrapper(Node<T> node) {
+  OptionalNodeWrapper(Node<T> node) {
     super(String.format("~%s", node.getName()), true, false, node);
     this.wrappedNode = node;
     setDeciderSupplier(node.deciderSupplier);
