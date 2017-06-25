@@ -10,7 +10,7 @@
 
   <groupId>com.zbiljic</groupId>
   <artifactId>nodez</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
 
   <name>nodez</name>
   <description>Dependency graph library for async programming</description>
