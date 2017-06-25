@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <!-- ignore serialization -->
+  <Match>
+    <Bug code="Se"/>
+  </Match>
+
+  <!-- completableFuture.complete(null) is valid but reported as error -->
+  <!-- see: https://github.com/findbugsproject/findbugs/issues/79      -->
+  <Match>
+    <Class name="com.zbiljic.nodez.Node"/>
+    <Bug pattern="NP_NONNULL_PARAM_VIOLATION"/>
+  </Match>
+  <Match>
+    <Class name="com.zbiljic.nodez.LightDarkSwitchNode"/>
+    <Method name="evaluate"/>
+    <Bug pattern="NP_NONNULL_PARAM_VIOLATION"/>
+  </Match>
+  <Match>
+    <Class name="com.zbiljic.nodez.TransformNode"/>
+    <Method name="transform"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+</FindBugsFilter>
