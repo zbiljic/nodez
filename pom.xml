@@ -59,7 +59,7 @@
     <!-- findbugs -->
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
+      <artifactId>jsr305</artifactId>
       <version>${dep.findbugs.version}</version>
       <optional>true</optional><!-- needed only for annotations -->
     </dependency>
