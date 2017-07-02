@@ -47,6 +47,11 @@
   <properties>
     <!-- Project options -->
     <basepom.release.tag-name-format>v@{project.version}</basepom.release.tag-name-format>
+    <basepom.javadoc.skip>false</basepom.javadoc.skip>
+
+    <!-- https://github.com/mycila/license-maven-plugin/releases -->
+    <dep.plugin.license.version>3.0</dep.plugin.license.version>
+
     <!-- Dependencies -->
     <dep.findbugs.version>3.0.2</dep.findbugs.version>
     <dep.slf4j.version>1.7.25</dep.slf4j.version>
@@ -99,6 +104,54 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>${dep.plugin.license.version}</version>
+          <configuration>
+            <skip>false</skip>
+            <skipExistingHeaders>true</skipExistingHeaders>
+            <failIfMissing>true</failIfMissing>
+            <header>src/license/LICENSE-HEADER.txt</header>
+            <headerDefinitions>
+              <headerDefinition>src/license/xml-prefix.xml</headerDefinition>
+            </headerDefinitions>
+            <mapping>
+              <xml>XML_PREFIX</xml>
+              <java>SLASHSTAR_STYLE</java>
+              <yaml>SCRIPT_STYLE</yaml>
+            </mapping>
+            <strictCheck>true</strictCheck>
+            <aggregate>true</aggregate>
+            <useDefaultExcludes>true</useDefaultExcludes>
+            <encoding>${project.build.sourceEncoding}</encoding>
+            <excludes>
+              <exclude>.*/**</exclude>
+              <exclude>**/*.md</exclude>
+              <exclude>**/*.rst</exclude>
+              <exclude>**/*.adoc</exclude>
+              <exclude>**/*.sh</exclude>
+              <exclude>**/*.txt</exclude>
+              <exclude>**/*.thrift</exclude>
+              <exclude>**/*.proto</exclude>
+              <exclude>**/*.g</exclude>
+              <exclude>**/*.releaseBackup</exclude>
+              <exclude>**/*.vm</exclude>
+              <exclude>**/*.st</exclude>
+              <exclude>**/*.raw</exclude>
+              <exclude>**/*.ser</exclude>
+              <exclude>**/src/license/**</exclude>
+            </excludes>
+            <includes>
+              <include>src/**</include>
+              <include>**/pom.xml</include>
+            </includes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -135,6 +188,19 @@
         <configuration>
           <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
