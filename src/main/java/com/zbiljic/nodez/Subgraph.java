@@ -14,10 +14,13 @@ import java.util.List;
  * node graph. It exposes one or more internal nodes of this graph via public member variables.
  * <p>
  * To implement a subclass, you should:
- * 1. add public member variables of Node type for all the nodes you want to expose.
- * 2. implement your own constructor, with one or more Node inputs and other input, create all
- * node wiring in the constructor.
- * 3. at the end of constructor, call {@link #markExposedNodes()}.
+ * <ol>
+ * <li>add public member variables of Node type for all the nodes you want to expose.</li>
+ * <li>implement your own constructor, with one or more Node inputs and other input, create all node
+ * wiring in the constructor.</li>
+ * <li>at the end of constructor, call {@link #markExposedNodes()}.</li>
+ * </ol>
+ * <p>
  */
 public abstract class Subgraph {
 
@@ -30,7 +33,7 @@ public abstract class Subgraph {
    * reflection. This is for debugging and DOT graph generation purpose. If this method is not
    * called, there's no impact on the executions of nodes, it just affect the generated DOT graph.
    * <p>
-   * This is only done when current debug level is > 0, so we don't need to run this for every
+   * This is only done when current debug level is &gt; 0, so we don't need to run this for every
    * production query.
    */
   protected void markExposedNodes() {

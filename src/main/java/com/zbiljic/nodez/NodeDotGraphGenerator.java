@@ -17,10 +17,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * Create DOT graph text for a node. This recursively traverses the node dependencies and create
- * the node dependency graph.
- * - http://www.graphviz.org/Documentation.php
- * - http://en.wikipedia.org/wiki/DOT_(graph_description_language)
+ * Create DOT graph text for a node. This recursively traverses the node dependencies and create the
+ * node dependency graph.
+ * <p>
+ * <ul> <li><a href="http://www.graphviz.org/Documentation.php">http://www.graphviz.org/Documentation.php</a></li>
+ * <li><a href="http://en.wikipedia.org/wiki/DOT_(graph_description_language)">http://en.wikipedia.org/wiki/DOT_(graph_description_language)</a></li>
+ * </ul>
  */
 public final class NodeDotGraphGenerator {
 

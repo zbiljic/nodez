@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A {@link ValueNode} based on supplier.
+ * A {@link ValueNode} based on {@link Supplier}.
  *
  * @param <R> return type of the node
  * @see Node

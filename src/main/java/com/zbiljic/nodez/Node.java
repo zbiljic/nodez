@@ -782,8 +782,8 @@ public abstract class Node<R> implements Function0<CompletableFuture<R>> {
   }
 
   /**
-   * A simpler helper merging {@link Node#builder(Node)} and {@link Builder#withDependencies(Object...)#build(Class,
-   * Object...)} into one call.
+   * A simpler helper merging {@link Node#builder(Node)} and {@link Builder#withDependencies(Object...)}
+   * into one call.
    */
   public static <T> Node<T> build(Class<? extends Node<T>> nodeClass, Object... dependencies) {
     return new Builder<>(nodeClass, null).withDependencies(dependencies).build();

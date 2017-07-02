@@ -18,7 +18,7 @@ public enum Throwables {
    * a chain provides context from when the error or exception was initially detected. Example
    * usage:
    * <pre>
-   *   assertEquals("Unable to assign a customer id", Throwables.getRootCause(e).getMessage());
+   * assertEquals("Unable to assign a customer id", Throwables.getRootCause(e).getMessage());
    * </pre>
    */
   public static Throwable getRootCause(Throwable throwable) {

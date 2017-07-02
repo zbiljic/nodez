@@ -20,7 +20,7 @@ public class LightDarkSwitchNode<T> extends Node<T> {
    * Use a condition to dark read a response node, which is always applied.
    * <p>
    * If the condition is {@code true}, {@code null} will be returned, if {@code false}, the result
-   * of {@param responseNode} will be returned.
+   * of {@code responseNode} will be returned.
    */
   public static <T> Node<T> create(Node<Boolean> shouldDarkReadNode, Node<T> responseNode) {
     return new LightDarkSwitchNode<>(shouldDarkReadNode, null, responseNode);

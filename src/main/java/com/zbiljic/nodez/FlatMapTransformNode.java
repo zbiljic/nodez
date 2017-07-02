@@ -21,7 +21,7 @@ public class FlatMapTransformNode<SourceType, R> extends BaseTransformNode<Sourc
   /**
    * Create a new FlatMapTransformNode with decider key.
    * <p>
-   * NOTE: Try not to use this directly, use Node.flatMap() instead.
+   * NOTE: Try not to use this directly, use {@link Node#flatMap} instead.
    */
   static <SourceType, R> FlatMapTransformNode<SourceType, R> create(
     Node<SourceType> node,

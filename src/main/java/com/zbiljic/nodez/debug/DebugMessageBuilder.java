@@ -2,7 +2,7 @@ package com.zbiljic.nodez.debug;
 
 /**
  * A class to build debug messages with different levels. We also duplicate debug messages with a
- * level > 2 to debug logs using slf4j.
+ * level &gt; 2 to debug logs using slf4j.
  */
 public class DebugMessageBuilder {
 
