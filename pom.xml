@@ -29,14 +29,16 @@
 
   <name>nodez</name>
   <description>Dependency graph library for async programming</description>
+  <url>https://github.com/zbiljic/nodez</url>
 
   <inceptionYear>2017</inceptionYear>
 
   <licenses>
     <license>
       <name>Apache License 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
     </license>
   </licenses>
 
@@ -44,6 +46,8 @@
     <developer>
       <id>zbiljic</id>
       <name>Nemanja Zbiljić</name>
+      <timezone>+1</timezone>
+      <url>https://github.com/zbiljic</url>
     </developer>
   </developers>
 
@@ -58,6 +62,14 @@
     <system>GitHub</system>
     <url>http://github.com/zbiljic/nodez/issues</url>
   </issueManagement>
+
+  <distributionManagement>
+    <repository>
+      <id>bintray-zbiljic-maven</id>
+      <name>zbiljic-maven</name>
+      <url>https://api.bintray.com/maven/zbiljic/maven/nodez/;publish=1</url>
+    </repository>
+  </distributionManagement>
 
   <properties>
     <!-- Project options -->
