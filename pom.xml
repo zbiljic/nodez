@@ -183,6 +183,27 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive combine.self="override">
+            <manifest>
+              <addClasspath>false</addClasspath>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+            <manifestSections>
+              <manifestSection>
+                <name>${project.groupId}:${project.artifactId}</name>
+                <manifestEntries>
+                  <!-- project information -->
+                  <Project-ArtifactId>${project.artifactId}</Project-ArtifactId>
+                  <Project-GroupId>${project.groupId}</Project-GroupId>
+                  <Project-Name>${project.name}</Project-Name>
+                  <Project-Version>${project.version}</Project-Version>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
+          </archive>
+        </configuration>
         <executions>
           <!-- Disable building test jar -->
           <execution>
